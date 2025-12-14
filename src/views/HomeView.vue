@@ -48,12 +48,12 @@
 <script setup>
 import { ref } from 'vue';
 import CourtCard from '../components/CourtCard.vue';
-import GorGbkImage from '../assets/gorGbk.jpg';
-import GorKelapaGadingImage from '../assets/gorkelapagading.jpg';
-import GorBsdImage from '../assets/gorBsd.jpg';
-import GorPondokIndahImage from '../assets/gorPondokIndah.jpg';
-import GorTamanSurya from '../assets/gorTamanPalem.jpg';
-import GorCengkareng from '../assets/gorCengkareng.jpg';
+import GorGbkImage from '../assets/img/gorGbk.jpg';
+import GorKelapaGadingImage from '../assets/img/gorkelapagading.jpg';
+import GorBsdImage from '../assets/img/gorBsd.jpg';
+import GorPondokIndahImage from '../assets/img/gorPondokIndah.jpg';
+import GorTamanSurya from '../assets/img/gorTamanPalem.jpg';
+import GorCengkareng from '../assets/img/gorCengkareng.jpg';
 
 
 

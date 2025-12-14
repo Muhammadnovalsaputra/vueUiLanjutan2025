@@ -20,7 +20,7 @@
       <h1 class="page-title">Cari Lapangan Basket</h1>
       <p class="page-subtitle">Temukan lapangan basket terbaik di lokasi favoritmu</p>
       
-      <div class="filter-bar">
+      <div class="filter-bar flex justify-between">
         <div class="filter-group">
           <label class="filter-label">Lokasi</label>
           <input type="text" placeholder="Cari lokasi..." class="filter-input-text"
@@ -28,14 +28,14 @@
         </div>
 
         <div class="filter-group">
-          <label class="filter-label">Rentang Harga</label>
-                    <select class="filter-select" v-model="priceRange">
-            <option value="all">Semua Harga</option>
-                        <option value="100000-150000">Rp 100.000 - Rp 150.000</option>
-                        <option value="150000-200000">Rp 150.000 - Rp 200.000</option>
-            <option value="0-100000">Dibawah Rp 100.000</option>
-          </select>
-        </div>
+        <label class="filter-label">Rentang Harga</label>
+        <select class="filter-select" v-model="priceRange">
+         <option value="all">Semua Harga</option>
+          <option value="100000-150000">Rp 100.000 - Rp 150.000</option>
+          <option value="150000-200000">Rp 150.000 - Rp 200.000</option>
+        <option value="0-100000">Dibawah Rp 100.000</option>
+      </select>
+     </div>
 
         <div class="filter-group">
           <label class="filter-label">Urutkan</label>
@@ -65,12 +65,12 @@
 import { computed, ref } from 'vue';
 import CourtCard from '../components/CourtCard.vue';
 // Import Aset Gambar Lokal
-import GorGbkImage from '../assets/gorGbk.jpg';
-import GorKelapaGadingImage from '../assets/gorkelapagading.jpg';
-import GorBsdImage from '../assets/gorBsd.jpg';
-import GorPondokIndahImage from '../assets/gorPondokIndah.jpg';
-import GorTamanSurya from '../assets/gorTamanPalem.jpg';
-import GorCengkareng from '../assets/gorCengkareng.jpg';
+import GorGbkImage from '../assets/img/gorGbk.jpg';
+import GorKelapaGadingImage from '../assets/img/gorkelapagading.jpg';
+import GorBsdImage from '../assets/img/gorBsd.jpg';
+import GorPondokIndahImage from '../assets/img/gorPondokIndah.jpg';
+import GorTamanSurya from '../assets/img/gorTamanPalem.jpg';
+import GorCengkareng from '../assets/img/gorCengkareng.jpg';
 
 
 const courts = ref([
