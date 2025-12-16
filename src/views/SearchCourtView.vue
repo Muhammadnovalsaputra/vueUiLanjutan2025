@@ -10,9 +10,9 @@
           <router-link :to="{ name: 'home' }" class="nav-link">Beranda</router-link>
           <router-link :to="{ name: 'search' }" class="nav-link active">Cari Lapangan</router-link>
         </div>
-        <router-link :to="{ name: 'profile' }" class="profile-icon">
-          👤
-        </router-link>
+        <a href="#" class="profile-icon">
+  👤
+</a>
       </nav>
     </header>
 

@@ -4,8 +4,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue"; 
 
 import SearchCourtView from "../views/SearchCourtView.vue"; 
-import ProfileView from "../views/ProfileView.vue";  
+import ProfileView from "../views/CheckOutView.vue";  
 import CourtDetailView from "../views/CourtDetailView.vue";     
+import CheckOutView from "../views/CheckOutView.vue";
+import PaymentSuccessView from "../views/PaymentSuccessView.vue";
 
 
 const router = createRouter({
@@ -22,15 +24,21 @@ history : createWebHistory(import.meta.env.BASE_URL),
      component : SearchCourtView,
      },
      {
-       path : '/profile',
-       name : 'profile',
-       component : ProfileView, 
+       path : '/checkout',
+       name : 'checkout',
+       component : CheckOutView, 
       },
       {
-       path : '/courtDetailView',
-       name : 'courtDetailView',
-       component : CourtDetailView, 
+       path : '/court/:id',        
+       name : 'courtDetailView',   
+       component : CourtDetailView,
       },
+      {
+       path: '/payment-success',
+       name: 'payment-success',
+       component: PaymentSuccessView
+  }
+  
 
 
     ]

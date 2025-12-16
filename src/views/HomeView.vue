@@ -10,20 +10,19 @@
           <router-link :to="{ name: 'home' }" class="nav-link active">Beranda</router-link>
           <router-link :to="{ name: 'search' }" class="nav-link">Cari Lapangan</router-link>
         </div>
-        <router-link :to="{ name: 'profile' }" class="profile-icon">
-          👤
-        </router-link>
+        <a href="#" class="profile-icon">
+  👤
+</a>
       </nav>
     </header>
 
     <div class="search-bar-wrapper">
-      <div class="search-bar">
+      <div class="search-bar ">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
 
-        <input type="text" placeholder="Lokasi" class="search-input location-input">
-        <input type="date" placeholder="Tanggal" class="search-input date-input">
+        <input type="text" placeholder="Lokasi" class="search-input location-input" v-model="searchQuery">
         
         <button class="search-button">
           🔍 Cari
@@ -37,7 +36,11 @@
         <p class="section-subtitle">Pilihan terbaik untuk pengalaman bermain basket yang optimal</p> 
         
         <div class="court-grid">
-          <CourtCard v-for="court in featuredCourts" :key="court.id" :court="court" />
+          <CourtCard v-for="court in filteredCourts" :key="court.id" :court="court" />
+        </div>
+
+        <div v-if="filteredCourts.length === 0" class="no-results">
+          Lapangan di {{ searchQuery }} tidak ditemukan.
         </div>
       </section>
     </main>
@@ -46,7 +49,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref , computed } from 'vue';
 import CourtCard from '../components/CourtCard.vue';
 import GorGbkImage from '../assets/img/gorGbk.jpg';
 import GorKelapaGadingImage from '../assets/img/gorkelapagading.jpg';
@@ -55,7 +58,7 @@ import GorPondokIndahImage from '../assets/img/gorPondokIndah.jpg';
 import GorTamanSurya from '../assets/img/gorTamanPalem.jpg';
 import GorCengkareng from '../assets/img/gorCengkareng.jpg';
 
-
+const searchQuery = ref('');
 
 
 const featuredCourts = ref([
@@ -108,17 +111,35 @@ const featuredCourts = ref([
     imageUrl: GorCengkareng
   },
 ]);
+const filteredCourts = computed(() => {
+  
+  if (!searchQuery.value.trim()) {
+    return featuredCourts.value;
+  }
+
+  const query = searchQuery.value.toLowerCase();
+  
+  
+  return featuredCourts.value.filter(court => {
+    return (
+      court.location.toLowerCase().includes(query) || 
+      court.name.toLowerCase().includes(query)
+    );
+  });
+});
+
+
 </script>
 
 <style scoped>
-/* General Layout */
+
 .home-container {
   font-family: Arial, sans-serif;
   background-color: #f7f7f7;
   min-height: 100vh;
 }
 
-/* Navigation Bar */
+
 .navbar {
   background-color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -135,7 +156,7 @@ const featuredCourts = ref([
 .text-logo {
   font-size: 1.5em;
   font-weight: bold;
-  color: #007AFF; /* Biru Primer */
+  color: #007AFF;
 }
 .nav-links {
   display: flex;
@@ -210,5 +231,13 @@ const featuredCourts = ref([
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  grid-column: 1 / -1; 
+  font-style: italic;
 }
 </style>

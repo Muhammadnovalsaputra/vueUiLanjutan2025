@@ -19,7 +19,7 @@
         <span class="price-value">
           Rp {{ court.price.toLocaleString('id-ID') }}
         </span>
-        <button class="view-button">Lihat</button>
+        <button class="view-button" @click.stop="goToDetail(court.id)">Lihat</button>
       </div>
     </div>
   </div>
@@ -38,9 +38,9 @@ const props = defineProps({
 
 const router = useRouter();
 
+
 const goToDetail = (id) => {
-  
-  router.push({ name: 'court-detail', params: { id } }); 
+  router.push({ name: 'courtDetailView', params: { id: id } }); 
 };
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="court-detail-view">
+  <div v-if="court" class="court-detail-view">
     <header class="header">
       <button @click="goBack" class="back-button">
         ← Kembali
@@ -11,9 +11,8 @@
 
     <main class="content-container">
       <section class="court-details">
-        <div class="court-image-wrapper">
-          <img :src="court.imageUrl" :alt="court.name" class="court-image" />
-        </div>
+       <h1>{{ court.name }}</h1>
+       <img :src="court.imageUrl" :alt="court.name" class="court-image" />
 
         <div class="court-info">
           <h1 class="court-name">{{ court.name }}</h1>
@@ -128,29 +127,102 @@
 
         <div class="summary-item total-item">
           <span class="label">Total</span>
-          <span class="value total-price">{{ formatCurrency(booking.totalPrice) }}</span>
+          <span class="value total-price">{{ formatCurrency(totalPrice) }}</span>
         </div>
-
         <button @click="continueToPayment" class="payment-button">
           Lanjutkan ke Pembayaran
         </button>
       </aside>
     </main>
   </div>
+  <div v-else class="loading-state">
+    <p>Sedang memuat data atau lapangan tidak ditemukan...</p>
+    <button @click="goBack">Kembali</button>
+  </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router'; 
+import GorGbkImage from '../assets/img/gorGbk.jpg';
+import GorKelapaGadingImage from '../assets/img/gorkelapagading.jpg';
+import GorBsdImage from '../assets/img/gorBsd.jpg';
+import GorPondokIndahImage from '../assets/img/gorPondokIndah.jpg';
+import GorTamanSurya from '../assets/img/gorTamanPalem.jpg';
+import GorCengkareng from '../assets/img/gorCengkareng.jpg';
 
+const route = useRoute();
+const router = useRouter(); 
+const courtId = route.params.id;
+
+const court  = ref(null);
+
+onMounted(() => {
+  const foundCourt = allCourts.find(item => item.id === parseInt(courtId));
+  if (foundCourt) {
+    court.value = foundCourt;
+    booking.value.courtName = foundCourt.name;
+    booking.value.pricePerHour = foundCourt.pricePerHour || foundCourt.price || 0;
+  }
+});
+
+const goBack = () => {
+  router.back();
+};
 // --- Data Dummy ---
 
-const court = ref({
-  name: 'Arena Basket Kelapa Gading',
-  location: 'Jakarta Utara',
-  rating: 4.6,
-  imageUrl: 'https://via.placeholder.com/600x300.png?text=Arena+Basket+Kelapa+Gading', 
-  description: 'Lapangan outdoor dengan pemandangan terbuka dan udara segar. Cocok untuk latihan tim atau pertandingan persahabatan.'
-});
+const allCourts = [
+  {
+    id: 1,
+    name: 'GOR Basket Senayan',
+    location: 'Jakarta Pusat',
+    rating: 4.8,
+    imageUrl: GorGbkImage,
+    description: 'Lapangan basket standar internasional di pusat kota.',
+    pricePerHour: 150000
+  },
+  {
+    id: 2,
+    name: 'Arena Kelapa Gading',
+    location: 'Jakarta Utara',
+    rating: 4.6,
+    imageUrl: GorKelapaGadingImage,
+    description: 'Fasilitas lengkap dengan kantin dan area parkir luas.',
+    pricePerHour: 120000
+  },
+  {
+    id: 3,
+    name: 'Sports Hall BSD',
+    location: 'Tangerang Selatan',
+    price: 180000,
+    rating: 4.9,
+    imageUrl: GorBsdImage
+  },
+  {
+    id: 4,
+    name: 'Basket Court Pondok Indah',
+    location: 'Jakarta Selatan',
+    price: 160000,
+    rating: 4.7,
+    imageUrl: GorPondokIndahImage
+  },
+  {
+    id: 5,
+    name: 'Basket Taman Surya',
+    location: 'Jakarta Barat',
+    price: 75000,
+    rating: 4.5,
+    imageUrl: GorTamanSurya
+  },
+  {
+    id: 6,
+    name: 'Basket Gor Cengkareng',
+    location: 'Jakarta Barat',
+    price: 100000,
+    rating: 4.8,
+    imageUrl: GorCengkareng
+  },
+];
 
 const facilities = ref([
     { name: 'Outdoor', available: true },
@@ -174,7 +246,7 @@ const schedule = ref({
     hours: [
         '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'
     ],
-    // Status: 'Tersedia', 'Terisi', 'Dipilih', 'Penghalang'
+    
     slots: {
         '06:00': ['Tersedia', 'Terisi', 'Dipilih', 'Tersedia', 'Tersedia', 'Tersedia', 'Tersedia'],
         '08:00': ['Tersedia', 'Terisi', 'Tersedia', 'Penghalang', 'Penghalang', 'Penghalang', 'Tersedia'],
@@ -190,20 +262,20 @@ const schedule = ref({
 
 
 const booking = ref({
-    courtName: 'Arena Basket Kelapa Gading',
-    slotLockDuration: '14:08',
-    date: 'Senin, 15 Desember',
-    startTime: '06:00',
-    duration: 2, 
-    pricePerHour: 120000,
+    courtName : '',
+    slotLockDuration : '15 menit',
+    date : '',
+    startTime : '',
+    duration : 0,
+    pricePerHour : 0
 });
 
-// --- Computed Property ---
+
 
 const totalPrice = computed(() => {
     return booking.value.duration * booking.value.pricePerHour;
 });
-booking.value.totalPrice = totalPrice.value;
+
 
 
 // --- Refs untuk DOM manipulation (Scroll) ---
@@ -221,46 +293,57 @@ const getSlotClass = (status) => {
         case 'Tersedia': return 'available-slot';
         case 'Terisi': return 'filled-slot';
         case 'Dipilih': return 'selected-slot';
-        case 'Penghalang': return 'unavailable-slot'; // Untuk status 'Penuh'
+        case 'Penghalang': return 'unavailable-slot'; 
         default: return '';
     }
 };
 
 const handleSlotClick = (hour, dayIndex, status) => {
-    if (status === 'Tersedia') {
-        // Contoh sederhana: Mengubah slot yang diklik menjadi 'Dipilih'
-        schedule.value.slots[hour][dayIndex] = 'Dipilih'; 
-        console.log(`Slot dipilih: ${schedule.value.days[dayIndex].label}, ${hour}`);
-        // Perbarui data booking di sini
-        booking.value.date = schedule.value.days[dayIndex].label + ', ' + schedule.value.days[dayIndex].date;
+    for (const h in schedule.value.slots) {
+        schedule.value.slots[h] = schedule.value.slots[h].map(s => 
+            s === 'Dipilih' ? 'Tersedia' : s
+        );
+    }
+
+    if (status === 'Tersedia' || status === 'Dipilih') {
+        schedule.value.slots[hour][dayIndex] = 'Dipilih';
+        const selectedDay = schedule.value.days[dayIndex];
+        booking.value.date = `${selectedDay.label}, ${selectedDay.date}`;
         booking.value.startTime = hour;
-    } else if (status === 'Dipilih') {
-        // Jika diklik lagi, kembalikan ke 'Tersedia'
-        schedule.value.slots[hour][dayIndex] = 'Tersedia';
+        booking.value.duration = 2; 
     }
 }
 
 const scrollSchedule = (direction) => {
     if (scheduleWrapper.value) {
-        const scrollAmount = direction === 'right' ? 100 : -100; // Geser 100px
+        const scrollAmount = direction === 'right' ? 100 : -100;
         scheduleWrapper.value.scrollLeft += scrollAmount;
     }
 };
 
-const goBack = () => {
-  console.log('Kembali ke halaman sebelumnya...');
-};
+
 
 const continueToPayment = () => {
-  console.log('Lanjutkan ke Pembayaran...');
+  if(!booking.value.date || !booking.value.startTime === '-') {
+    alert('Silakan pilih slot waktu terlebih dahulu sebelum melanjutkan ke pembayaran.');
+    return;
+  }
+  router.push({
+    name : 'checkout',
+    query : {
+      id : court.value.id,
+      name : court.value.name,
+      date : booking.value.date,
+      startTime : booking.value.startTime,
+      duration : booking.value.duration,
+      price : court.value.pricePerHour || court.value.price
+    }
+  })
 };
 </script>
 
 <style scoped>
-/*
-   !!! Catatan: Styling ini adalah contoh dasar dan perlu disesuaikan
-   agar tampilannya sama persis seperti gambar.
-*/
+
 
 .court-detail-view {
   max-width: 1200px;
