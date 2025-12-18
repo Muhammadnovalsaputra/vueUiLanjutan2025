@@ -157,7 +157,7 @@ const handlePayment = () => {
 </script>
 
 <style scoped>
-    .checkout-container {
+  .checkout-container {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 30px;
